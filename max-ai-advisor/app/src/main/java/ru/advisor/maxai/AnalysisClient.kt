@@ -26,10 +26,6 @@ object AnalysisClient {
      val result=JSONObject(conn.inputStream.bufferedReader().use { it.readText() }).optString("analysis","Нет результата").take(5000)
      val old=prefs.getString("history","").orEmpty()
      prefs.edit().putString("history",(java.text.SimpleDateFormat("dd.MM HH:mm",java.util.Locale.getDefault()).format(java.util.Date())+" · "+source+"\n"+result+"\n\n"+old).take(30000)).apply()
-     val nm=app.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-     if(Build.VERSION.SDK_INT>=26) nm.createNotificationChannel(NotificationChannel("analysis","Результаты ИИ",NotificationManager.IMPORTANCE_DEFAULT))
-     val notification=Notification.Builder(app,"analysis").setSmallIcon(android.R.drawable.ic_dialog_info).setContentTitle("ИИ-советник: анализ готов").setContentText(result.take(120)).setStyle(Notification.BigTextStyle().bigText(result.take(1500))).setAutoCancel(true).build()
-     nm.notify((System.currentTimeMillis()%100000).toInt(),notification)
     } finally { conn.disconnect() }
    } catch (_:Exception) { /* Не отправляем содержимое сообщений в логи */ }
   }
